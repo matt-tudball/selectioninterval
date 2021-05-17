@@ -1,11 +1,9 @@
 rm(list=ls())
-require(ggplot2); require(parallel); require(devtools); require(nloptr);
-require(numDeriv); require(pbapply); library(survey)
-setwd("C:/Users/ow18301/OneDrive - University of Bristol/MyFiles-Migrated/Documents/IEASBOS_FILES_")
+require(ggplot2); require(parallel); require(devtools); require(pbapply)
+setwd("C:/Users/ow18301/OneDrive - University of Bristol/MyFiles-Migrated/Documents")
 
 # Load functions
-source("CODE/selectioninterval/R/selection_bound.R")
-source("CODE/selectioninterval/R/misc_funs.R")
+load_all(path='IEASBOS_FILES_/CODE/selectioninterval')
 
 # Seed
 set.seed(2021)
@@ -15,14 +13,10 @@ N <- 1e7
 
 # Population data
 X <- as.matrix(rbeta(N,2,5))
+#X <- as.matrix(runif(N,0,1))
+#X <- as.matrix(rexp(N,1))
 Y <- as.vector(runif(N,0,1))
 W <- as.matrix(cbind(X,Y))
-
-cons <- list(
-  list('RESP', 0.07),
-  list('COVMEAN', 1, 0.5)#,
-  #list('DIREC', 1, '+')
-)
 
 # Population confidence interval
 results_pop <- selection_bound(y=Y, x=X, w=W, L0l=0.1, L0u=0.2, L1=3)
@@ -65,6 +59,8 @@ for (j in 1:length(sample)) {
   print(paste("Coverage is ", mean(out)," for sample size ", sample[j], sep=""))
 }
 
+saveRDS(main, file="IEASBOS_FILES_/SIMULATIONS/DATA/coverage_beta.rds")
+
 # Make the plot
 data <- data.frame(x=sample, y=main)
 plot <- ggplot(data=data, aes(x=x, y=y)) +
@@ -74,5 +70,5 @@ plot <- ggplot(data=data, aes(x=x, y=y)) +
   ylab("Coverage frequency") +
   scale_y_continuous(breaks=seq(0,1,0.2)) +
   geom_hline(yintercept=0.95, color="grey42")
-#ggsave(filename="FAMMR_FILES/FIGURES/power_curves.pdf",plot=plot)
+#ggsave(filename="IEASBOS_FILES_/SIMULATIONS/FIGURES/coverage.pdf",plot=plot)
 
