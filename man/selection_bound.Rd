@@ -4,7 +4,19 @@
 \alias{selection_bound}
 \title{Sensitivity analysis for selection bias}
 \usage{
-selection_bound(y, x, w, L0l, L0u, L1, cons = NULL, theta = NULL, alpha = 0.05)
+selection_bound(
+  y,
+  x,
+  w,
+  z = NULL,
+  L0l,
+  L0u,
+  L1,
+  cons = NULL,
+  theta = NULL,
+  alpha = 0.05,
+  opts = NULL
+)
 }
 \arguments{
 \item{y}{Outcome (vector)}
@@ -12,6 +24,8 @@ selection_bound(y, x, w, L0l, L0u, L1, cons = NULL, theta = NULL, alpha = 0.05)
 \item{x}{Explanatory variables (matrix)}
 
 \item{w}{Selection variables (matrix)}
+
+\item{z}{Optional instrumental variables (matrix)}
 
 \item{L0l}{Lower bound for the probability of sample selection for the average observation}
 
@@ -24,9 +38,11 @@ deviation (continuous) increase in a variable.}
 constraint; \code{COVMEAN} is a covariate mean constraint; \code{DIREC} is a
 directionality constraint.}
 
-\item{theta}{Starting parameter for the optimisation problem,}
+\item{theta}{Optional starting parameter for the global optimiser.}
 
 \item{alpha}{Significance level for confidence interval.}
+
+\item{opts}{Optional list of options for the global optimiser.}
 }
 \value{
 Named list of objects: \code{theta_min} (\code{theta_max}) is the parameters

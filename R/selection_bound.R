@@ -87,9 +87,8 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
   }
 
   # Keep RESP and COVMEAN constraints
-  cons <- cons[sapply(X=cons, FUN=function(item) {
-    return(item[[1]] %in% c("RESP","COVMEAN"))
-  })]
+  ind <- sapply(X=cons, FUN=function(item) { return(item[[1]] %in% c("RESP","COVMEAN")) })
+  if (any(ind)) { cons <- cons <- cons[ind] } else { cons <- NULL }
 
   # Select critical values and constraint functions (if needed)
   if (!is.null(cons)) {
@@ -158,8 +157,9 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
     # Global optimiser to find approximate solution
     suppressMessages(
       global_solve <- nloptr(x0=theta, eval_f=fn, lb=lower, ub=upper,
-                             eval_g_ineq=hin, opts=list("xtol_rel"=opts$xtol_rel, "maxeval"=opts$maxeval,
-                                                        "algorithm"=opts$algorithm,"print_level"=1))
+                             eval_g_ineq=hin,
+                             opts=list("xtol_rel"=opts$xtol_rel, "maxeval"=opts$maxeval,
+                                       "algorithm"=opts$algorithm,"print_level"=1))
     )
 
     theta <- global_solve$solution

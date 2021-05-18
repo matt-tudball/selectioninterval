@@ -12,17 +12,20 @@ set.seed(2021)
 N <- 1e7
 
 # Population data
-X <- as.matrix(rbeta(N,2,5))
-#X <- as.matrix(runif(N,0,1))
+#X <- as.matrix(rbeta(N,2,5))
+X <- as.matrix(rnorm(N,0,1))
 #X <- as.matrix(rexp(N,1))
-Y <- as.vector(runif(N,0,1))
+Y <- as.vector(rnorm(N,0,1))
 W <- as.matrix(cbind(X,Y))
 
+mycons <- list(list('DIREC',1,'+'))
+
 # Population confidence interval
-results_pop <- selection_bound(y=Y, x=X, w=W, L0l=0.1, L0u=0.2, L1=3)
+results_pop <- selection_bound(y=Y, x=X, w=W, L0l=0.1, L0u=0.2, L1=3, cons=mycons,
+               opts=list(algorithm="NLOPT_GN_ORIG_DIRECT", maxeval=5e4, xtol_rel=1e-2))
 
 # Simulation
-sample <- c(seq(10,50,5), seq(100,1000,100), seq(1500,10000,500))
+sample <- 1e3 # c(seq(10,50,5), seq(100,1000,100), seq(2000,10000,1000), seq(12000,20000,2000))
 main <- rep(NA, length(sample))
 
 for (j in 1:length(sample)) {
@@ -42,7 +45,8 @@ for (j in 1:length(sample)) {
     Ys <- Y[id]; Xs <- X[id,]; Ws <- W[id,]
 
     # Compute sample confidence interval
-    results_sample <- selection_bound(y=Ys, x=Xs, w=Ws, L0l=0.1, L0u=0.2, L1=3)
+    results_sample <- selection_bound(y=Ys, x=Xs, w=Ws, L0l=0.1, L0u=0.2, L1=3,
+                      opts=list(algorithm="NLOPT_GN_ORIG_DIRECT", maxeval=5e4, xtol_rel=1e-2))
 
     # Coverage
     coverage <- (results_sample$ci[1] <= results_pop$interval[1]) &
@@ -59,7 +63,7 @@ for (j in 1:length(sample)) {
   print(paste("Coverage is ", mean(out)," for sample size ", sample[j], sep=""))
 }
 
-saveRDS(main, file="IEASBOS_FILES_/SIMULATIONS/DATA/coverage_beta.rds")
+saveRDS(main, file="IEASBOS_FILES_/SIMULATIONS/DATA/coverage_unif.rds")
 
 # Make the plot
 data <- data.frame(x=sample, y=main)
