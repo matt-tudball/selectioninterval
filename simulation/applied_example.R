@@ -38,15 +38,15 @@ mycons4 <- list(
 )
 
 # Intervals
-out0 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=3, cons=NULL)
+out0 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=2.5, cons=NULL)
 
-out1 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=3, cons=mycons1)
+out1 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=2.5, cons=mycons1)
 
-out2 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=3, cons=mycons2)
+out2 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=2.5, cons=mycons2)
 
-out3 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=3, cons=mycons3)
+out3 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=2.5, cons=mycons3)
 
-out4 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=3, cons=mycons4)
+out4 <- selection_bound(y=y, x=x, z=z, w=w, L0l=0.02, L0u=0.2, L1=2.5, cons=mycons4)
 
 # Statistics implied by weights
 inv_wgt_min <- 1+exp(as.matrix(-cbind(1,w))%*%out0$theta_min)

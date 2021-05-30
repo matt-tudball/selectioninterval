@@ -37,7 +37,7 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
   y <- as.vector(y)
   x <- as.matrix(x)
   if(!is.null(z)) z <- as.matrix(z)
-  w <- as.matrix(w); w <- apply(w, 2, function(w) (w - mean(w))/sd(w))
+  w <- as.matrix(w); w <- apply(w, 2, function(v) (v - mean(v))/sd(v))
 
   # Sample size
   n <- length(y)
@@ -142,6 +142,8 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
                       hin=NULL, hinjac=NULL, localsolver=c("SLSQP"), nl.info=F,
                       control=list("xtol_rel"=1e-8, "ftol_rel"=1e-10, "maxeval"=-1))$par
     )
+
+    if (qloss(theta) > 0) stop("Could not find a feasible starting value.")
   } else {
     zstat2 <- qnorm(1-alpha/2)
 
