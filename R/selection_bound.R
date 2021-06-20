@@ -47,8 +47,16 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
   p <- ncol(w)
   w <- cbind(rep(1,n),w)
 
-  # Select options if none provided
-  if (is.null(opts)) opts <- list(algorithm="NLOPT_GN_ISRES", maxeval=5e4, xtol_rel=1e-2)
+  # Replace defaults with user-supplied options
+  global_opts <- list(algorithm="NLOPT_GN_ISRES", maxeval=5e4, xtol_rel=1e-2, print_level=0)
+  if (!is.null(opts)) {
+    for (j in 1:length(opts)) {
+      if(names(opts[j]) == "algorithm") global_opts$algorithm <- opts[[j]]
+      if(names(opts[j]) == "maxeval") global_opts$maxeval <- opts[[j]]
+      if(names(opts[j]) == "xtol_rel") global_opts$xtol_rel <- opts[[j]]
+      if(names(opts[j]) == "print_level") global_opts$print_level <- opts[[j]]
+    }
+  }
 
   # Select theta if none provided
   if (is.null(theta)) theta <- c(log(L0l*L0u/((1-L0l)*(1-L0u)))/2, rep(0,p))
@@ -109,7 +117,7 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
         }
 
         else if (item[[1]] == 'COVMEAN') {
-          ccov <- w[,item[[2]]+1]
+          ccov <- item[[2]]
           cmean <- item[[3]]
           cvar <- var(inv_wgt*(ccov-cmean))
           out <- -mean(inv_wgt*(ccov-cmean))^2 + zstat1^2*cvar/n
@@ -138,13 +146,18 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
 
     # Find an initial feasible theta
     suppressMessages(
-      theta <- auglag(x0=theta, fn=qloss, gr=qlossgr, lower=lower, upper=upper,
+      theta0 <- auglag(x0=theta, fn=qloss, gr=qlossgr, lower=lower, upper=upper,
                       hin=NULL, hinjac=NULL, localsolver=c("SLSQP"), nl.info=F,
                       control=list("xtol_rel"=1e-8, "ftol_rel"=1e-10, "maxeval"=-1))$par
     )
 
-    if (qloss(theta) > 0) stop("Could not find a feasible starting value.")
+    if (qloss(theta0) > 0) stop(
+      "Could not find a feasible starting value. Try increasing the sensitivity parameters
+      or including more variables in the weight model."
+    )
   } else {
+    theta0 <- theta
+
     zstat2 <- qnorm(1-alpha/2)
 
     hin <- NULL
@@ -158,24 +171,25 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
 
     # Global optimiser to find approximate solution
     suppressMessages(
-      global_solve <- nloptr(x0=theta, eval_f=fn, lb=lower, ub=upper,
-                             eval_g_ineq=hin,
-                             opts=list("xtol_rel"=opts$xtol_rel, "maxeval"=opts$maxeval,
-                                       "algorithm"=opts$algorithm,"print_level"=1))
+      global_solve <- nloptr(x0=theta0, eval_f=fn, lb=lower, ub=upper, eval_g_ineq=hin,
+                             opts=global_opts)
     )
 
-    theta <- global_solve$solution
+    theta1 <- global_solve$solution
 
     # Local optimiser to refine approximate solution
     suppressMessages(
-      results <- auglag(x0=theta, fn=fn, gr=gr, lower=lower, upper=upper,
+      results <- auglag(x0=theta1, fn=fn, gr=gr, lower=lower, upper=upper,
                         hin=hin, hinjac=hinjac, localsolver=c("SLSQP"), nl.info=F,
                         control=list("xtol_rel"=1e-8, "ftol_rel"=1e-10, "maxeval"=-1))
     )
 
     # Check if final solution is feasible
     if (!is.null(cons)) {
-      if (any(hin(results$par) < -1e-8)) stop("Solution is not feasible.")
+      if (any(hin(results$par) < -1e-8)) stop(
+        "Solution is not feasible. This error originates with the nloptr package.
+        Running the function again sometimes resolves this error."
+      )
     }
     assign(paste("theta_",bound,sep=""), results$par)
   }
