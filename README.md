@@ -1,5 +1,5 @@
 
-# selectioninterval: An R package for selection bias sensitivity analysis
+# selectioninterval: An R package for a selection bias sensitivity analysis
 
 <!-- badges: start -->
 <!-- badges: end -->
