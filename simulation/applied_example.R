@@ -56,7 +56,7 @@ mycons4 <- list(
 #)
 
 # Intervals
-out0 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=NULL)
+out0 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=NULL, opts=list(maxeval=1e5))
 
 out1 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons1)
 

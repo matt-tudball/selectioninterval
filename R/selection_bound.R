@@ -52,9 +52,10 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
   if (!is.null(opts)) {
     for (j in 1:length(opts)) {
       if(names(opts[j]) == "algorithm") global_opts$algorithm <- opts[[j]]
-      if(names(opts[j]) == "maxeval") global_opts$maxeval <- opts[[j]]
-      if(names(opts[j]) == "xtol_rel") global_opts$xtol_rel <- opts[[j]]
-      if(names(opts[j]) == "print_level") global_opts$print_level <- opts[[j]]
+      else if(names(opts[j]) == "maxeval") global_opts$maxeval <- opts[[j]]
+      else if(names(opts[j]) == "xtol_rel") global_opts$xtol_rel <- opts[[j]]
+      else if(names(opts[j]) == "print_level") global_opts$print_level <- opts[[j]]
+      else stop(paste(names(opts[j]), "is not a valid option."))
     }
   }
 
