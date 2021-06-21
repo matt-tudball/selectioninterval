@@ -1,13 +1,13 @@
 Package: selectioninterval
 Title: Selection Bias Sensitivity Analysis
-Version: 0.0.0.9000
+Version: 0.1
 Authors@R: 
     person(given = "Matthew",
            family = "Tudball",
            role = c("aut", "cre"),
            email = "matt.tudball@bristol.ac.uk",
            comment = c(ORCID = "0000-0002-7897-6180"))
-Description: This package implements a sensitivity analysis for sample selection bias. Users select odds ratio bounds for the parameters of a logistic model for the inverse probability weights. Users may also include auxiliary information on the population, such as the survey response rate or covariate means.
+Description: This package implements a sensitivity analysis for sample selection bias.
 License: `use_mit_license()`
 Encoding: UTF-8
 LazyData: true
