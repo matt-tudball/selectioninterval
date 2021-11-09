@@ -139,7 +139,7 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
           nvar <- ninv%*%tnx%*%nwgt%*%diag(nres)%*%t(nwgt)%*%nx%*%ninv
 
           # Checking whether constraints hold
-          out <- -ncoef[2]^2 + zstat1^2*nvar[2,2]
+          out <- -ncoef[2]^2 + zstat1^2*nvar[2,2]/n
         }
 
         return(out)
