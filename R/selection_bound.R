@@ -108,7 +108,7 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
 
     # Inequality constraints
     hin <- function(theta) {
-      inv_wgt <- 1+exp(-w%*%theta)
+      inv_wgt <- as.vector(1+exp(-w%*%theta))
 
       main <- sapply(X=cons, FUN=function(item) {
         if (item[[1]] == 'RESP') {
@@ -122,6 +122,22 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
           cmean <- item[[3]]
           cvar <- var(inv_wgt*(ccov-cmean))
           out <- -mean(inv_wgt*(ccov-cmean))^2 + zstat1^2*cvar/n
+        }
+
+        else if (item[[1]] == 'NEGCON') {
+          w1 <- item[[2]]
+          w2 <- item[[3]]
+          nx <- as.matrix(cbind(1,w1))
+          nwgt <- diag(inv_wgt)
+          ninv <- solve(t(nx)%*%nwgt%*%nx)
+
+          ncoef <- ninv%*%t(nx)%*%nwgt%*%w2
+
+          nres <- as.vector((w2 - nx%*%ncoef)^2)
+          nvar <- ninv%*%t(nx)%*%nwgt%*%diag(nres)%*%t(nwgt)%*%nx%*%ninv
+
+          # Checking whether constraints hold
+          out <- ncoef[2]^2 + zstat1^2*nvar[2,2]
         }
 
         return(out)
