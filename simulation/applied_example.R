@@ -1,6 +1,6 @@
 rm(list=ls())
 library(devtools); library(foreign); library(ggplot2)
-setwd("C:/Users/ow18301/OneDrive - University of Bristol/Documents/IEASBOS_FILES_")
+setwd("C:/Users/ow18301/OneDrive - University of Bristol/Documents/IEASBOS_FILES")
 
 p <- c(0.02, 0.2, 2) # 1
 #p <- c(0.01, 0.5, 2) # 2
@@ -10,7 +10,7 @@ p <- c(0.02, 0.2, 2) # 1
 #p <- c(0.01, 0.5, 1.75) # 6
 
 # Load function
-load_all(path='CODE/selectioninterval')
+load_all(path='IEASBOS_FILES/CODE/selectioninterval')
 
 # Load data
 dat <- read.dta("DATA/data_for_example.dta")
