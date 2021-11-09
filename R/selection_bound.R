@@ -123,6 +123,19 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
           cvar <- var(inv_wgt*(ccov-cmean))
           out <- -mean(inv_wgt*(ccov-cmean))^2 + zstat1^2*cvar/n
         }
+        
+        else if (item[[1]] == 'NEGCON') {
+          # Variable one
+          w1 <- item[[2]]
+          # Variable two
+          w2 <- item[[3]]
+          # Checking correlation (want it to be zero)
+          ncorr <- lm.wfit(x=w1,y=w2,w=inv_wgt)$coefficients[2]
+          # Variance of this correlation
+          nvar <- mean(lm.wfit(x=w1,y=w2,w=inv_wgt)$residuals^2)/sum(w2^2)
+          # Checking whether constraints hold
+          out <- -ncorr^2 + zstat1^2*nvar
+        }
 
         else if (item[[1]] == 'NEGCON') {
           w1 <- item[[2]]
