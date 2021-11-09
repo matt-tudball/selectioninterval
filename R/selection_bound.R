@@ -129,14 +129,13 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
           w2 <- item[[3]]
 
           nx <- as.matrix(cbind(1,w1))
-          tnx <- t(nx)
-          nwgt <- diag(inv_wgt)
-          ninv <- solve(tnx%*%nwgt%*%nx)
+          tnx <- t(nx*inv_wgt)
+          ninv <- solve(tnx%*%nx)
 
-          ncoef <- ninv%*%tnx%*%nwgt%*%w2
+          ncoef <- ninv%*%tnx%*%w2
 
           nres <- as.vector((w2 - nx%*%ncoef)^2)
-          nvar <- ninv%*%tnx%*%nwgt%*%diag(nres)%*%t(nwgt)%*%nx%*%ninv
+          nvar <- ninv%*%t(t(tnx)*nres)%*%t(tnx)%*%ninv
 
           # Checking whether constraints hold
           out <- -ncoef[2]^2 + zstat1^2*nvar[2,2]/n
