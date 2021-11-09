@@ -95,9 +95,9 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
     }
   }
 
-  # Keep RESP and COVMEAN constraints
-  ind <- sapply(X=cons, FUN=function(item) { return(item[[1]] %in% c("RESP","COVMEAN")) })
-  if (any(ind)) { cons <- cons <- cons[ind] } else { cons <- NULL }
+  # Keep RESP, COVMEAN and NEGCON constraints
+  ind <- sapply(X=cons, FUN=function(item) { return(item[[1]] %in% c("RESP","COVMEAN","NEGCON")) })
+  if (any(ind)) { cons <- cons[ind] } else { cons <- NULL }
 
   # Select critical values and constraint functions (if needed)
   if (!is.null(cons)) {
@@ -123,7 +123,7 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
           cvar <- var(inv_wgt*(ccov-cmean))
           out <- -mean(inv_wgt*(ccov-cmean))^2 + zstat1^2*cvar/n
         }
-        
+
         else if (item[[1]] == 'NEGCON') {
           # Variable one
           w1 <- item[[2]]
