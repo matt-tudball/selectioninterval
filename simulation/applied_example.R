@@ -1,6 +1,6 @@
 rm(list=ls())
 library(devtools); library(foreign); library(ggplot2)
-setwd("C:/Users/ow18301/OneDrive - University of Bristol/MyFiles-Migrated/Documents/IEASBOS_FILES_")
+setwd("C:/Users/ow18301/OneDrive - University of Bristol/Documents/IEASBOS_FILES_")
 
 p <- c(0.02, 0.2, 2) # 1
 #p <- c(0.01, 0.5, 2) # 2
