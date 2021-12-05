@@ -129,10 +129,10 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
           w2 <- item[[3]]
 
           nx <- as.matrix(cbind(1,w1))
-          tnx <- t(nx*inv_wgt)
-          ninv <- solve(tnx%*%nx)
+          tnx <- t(nx*inv_wgt) # Matrix transpose
+          ninv <- solve(tnx%*%nx) # Matrix inversion
 
-          ncoef <- ninv%*%tnx%*%w2
+          ncoef <- ninv%*%tnx%*%w2 # Matrix multiplication
 
           nres <- as.vector((w2 - nx%*%ncoef)^2)
           nvar <- ninv%*%t(t(tnx)*nres)%*%t(tnx)%*%ninv
