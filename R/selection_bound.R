@@ -189,9 +189,12 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
   for (bound in c("max","min")) {
     s <- 2*as.numeric(bound=="min")-1
 
+    # CAREFUL: nloptr appears to prefer h(x) <= 0
+    nhin <- function(x) { -hin(x) }
+
     # Global optimiser to find approximate solution
     suppressMessages(
-      global_solve <- nloptr(x0=theta0, eval_f=fn, lb=lower, ub=upper, eval_g_ineq=hin,
+      global_solve <- nloptr(x0=theta0, eval_f=fn, lb=lower, ub=upper, eval_g_ineq=nhin,
                              opts=global_opts)
     )
 

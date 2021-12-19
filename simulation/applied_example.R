@@ -10,7 +10,8 @@ p <- c(0.02, 0.2, 2) # 1
 #p <- c(0.01, 0.5, 1.75) # 6
 
 # Load function
-load_all(path='CODE/selectioninterval')
+# load_all(path='CODE/selectioninterval')
+library(selectioninterval)
 
 # Load data
 dat <- read.dta("DATA/data_for_example.dta")
