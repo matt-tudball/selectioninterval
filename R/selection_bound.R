@@ -28,6 +28,8 @@
 #' @importFrom numDeriv grad jacobian
 #' @importFrom AER ivreg ivreg.fit
 #'
+#' @export
+#'
 #' @examples
 #'
 

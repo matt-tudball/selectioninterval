@@ -1,3 +1,6 @@
+#' @export
+#'
+
 # Obtains the user's operating system
 get_os <- function(){
   sysinf <- Sys.info()
