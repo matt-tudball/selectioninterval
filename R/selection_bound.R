@@ -182,6 +182,8 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
 
     hin <- NULL
 
+    nhin <- NULL
+
     hinjac <- NULL
   }
 
@@ -190,7 +192,7 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
     s <- 2*as.numeric(bound=="min")-1
 
     # CAREFUL: nloptr appears to prefer h(x) <= 0
-    nhin <- function(x) { -hin(x) }
+    if(!is.null(cons)) nhin <- function(x) { -hin(x) }
 
     # Global optimiser to find approximate solution
     suppressMessages(
