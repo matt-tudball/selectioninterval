@@ -8,10 +8,11 @@ p <- c(0.02, 0.2, 2) # 1
 #p <- c(0.01, 0.5, 2.5) # 4
 #p <- c(0.02, 0.2, 1.75) # 5
 #p <- c(0.01, 0.5, 1.75) # 6
+#p <- c(0.02, 0.2, 4) # 7
 
 # Load function
-# load_all(path='CODE/selectioninterval')
-library(selectioninterval)
+ load_all(path='CODE/selectioninterval')
+#library(selectioninterval)
 
 # Load data
 dat <- read.dta("DATA/data_for_example.dta")
@@ -57,7 +58,7 @@ mycons4 <- list(
 #)
 
 # Intervals
-out0 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=NULL)
+out0 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3])
 
 out1 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons1)
 
@@ -71,8 +72,8 @@ out4 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=my
 
 # Statistics implied by weights
 u <- as.matrix(w); u <- apply(u, 2, function(v) (v - mean(v))/sd(v))
-inv_wgt_min <- 1+exp(as.matrix(-cbind(1,u))%*%out0$theta_min)
-inv_wgt_max <- 1+exp(as.matrix(-cbind(1,u))%*%out0$theta_max)
+inv_wgt_min <- 1+exp(as.matrix(-cbind(1,u))%*%out4$theta_min)
+inv_wgt_max <- 1+exp(as.matrix(-cbind(1,u))%*%out4$theta_max)
 
 # For min
 print(paste("Population mean of males:", round(weighted.mean(x=w$w_sex, w=inv_wgt_min),4)))
@@ -92,7 +93,7 @@ main <- data.frame(type=c("0","1","2","3","4"),
                    interval_upper=c(out0$interval[2], out1$interval[2], out2$interval[2], out3$interval[2], out4$interval[2]))
 
 
-main <- readRDS("~/IEASBOS_FILES_/SIMULATIONS/DATA/applied_example_1.rds")
+# main <- readRDS("~/IEASBOS_FILES_/SIMULATIONS/DATA/applied_example_1.rds")
 
 # Add raw estimate
 main <- rbind(main, c("5",0.08, 0.28, 0.17, 0.19))
@@ -101,7 +102,7 @@ main$ci_upper <- as.numeric(main$ci_upper)
 main$interval_lower <- as.numeric(main$interval_lower)
 main$interval_upper <- as.numeric(main$interval_upper)
 
-saveRDS(main, file="SIMULATIONS/DATA/applied_example_1.rds")
+# saveRDS(main, file="SIMULATIONS/DATA/applied_example_1.rds")
 
 plot <- ggplot(main, aes(type)) +
   geom_hline(aes(yintercept=0), color = "grey", linetype="dashed") +
@@ -123,5 +124,5 @@ plot <- ggplot(main, aes(type)) +
   coord_flip()
 
 plot
-ggsave(filename=paste("FIGURES/applied_example_1",type=".pdf",sep=""),plot=plot)
+ggsave(filename=paste("FIGURES/applied_example_1",type=".pdf",sep=""), plot=plot, width=5, height=3)
 

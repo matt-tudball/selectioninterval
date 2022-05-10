@@ -1,9 +1,9 @@
 rm(list=ls())
 require(ggplot2); require(parallel); require(devtools); require(pbapply)
-setwd("C:/Users/ow18301/OneDrive - University of Bristol/MyFiles-Migrated/Documents")
+setwd("C:/Users/ow18301/OneDrive - University of Bristol/Documents")
 
 # Load functions
-load_all(path='IEASBOS_FILES_/CODE/selectioninterval')
+load_all(path='IEASBOS_FILES/CODE/selectioninterval')
 
 # Seed
 set.seed(2021)
@@ -38,7 +38,7 @@ for (j in 1:length(sample)) {
 
   out <- t(pbsapply(X=1:5e3, cl = cl, simplify=T, FUN=function(x) {
     # Load package
-    load_all(path='IEASBOS_FILES_/CODE/selectioninterval')
+    load_all(path='IEASBOS_FILES/CODE/selectioninterval')
 
     # Sample data
     n <- sample[j]

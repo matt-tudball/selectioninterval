@@ -168,10 +168,10 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
     suppressMessages(
       theta0 <- auglag(x0=theta, fn=qloss, gr=qlossgr, lower=lower, upper=upper,
                       hin=NULL, hinjac=NULL, localsolver=c("SLSQP"), nl.info=F,
-                      control=list("xtol_rel"=1e-8, "ftol_rel"=1e-10, "maxeval"=-1))$par
+                      control=list("xtol_rel"=1e-10, "ftol_rel"=0, "maxeval"=-1))$par
     )
 
-    if (qloss(theta0) > 0) stop(
+    if (qloss(theta0) > 1e-5) stop(
       "Could not find a feasible starting value. Try increasing the sensitivity parameters
       or including more variables in the weight model."
     )
