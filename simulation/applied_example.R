@@ -49,31 +49,31 @@ mycons4 <- list(
   list('COVMEAN', w[,4], -0.297)
 )
 
-#mycons5 <- list(
-#  list('RESP', 0.055),
-#  list('COVMEAN', w[,2], 0.495),
-#  list('COVMEAN', w[,3], 0.21),
-#  list('COVMEAN', w[,4], -0.297),
-#  list('DIREC', 1, '+')
-#)
+mycons5 <- list(
+  list('RESP', 0.055),
+  list('COVMEAN', w[,2], 0.495),
+  list('COVMEAN', w[,3], 0.21),
+  list('COVMEAN', w[,4], -0.297),
+  list('DIREC', 1, '+')
+)
 
 # Intervals
-out0 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3])
+out0 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], opts=list("print_level"=1))
 
-out1 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons1)
+out1 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons1, opts=list("print_level"=1))
 
-out2 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons2)
+#out2 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons2)
 
-out3 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons3)
+#out3 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons3)
 
-out4 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons4)
+out4 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons4, opts=list("print_level"=1))
 
-#out5 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons5)
+out5 <- selection_bound(y=y, x=x, z=z, w=w, L0l=p[1], L0u=p[2], L1=p[3], cons=mycons5, opts=list("print_level"=1))
 
 # Statistics implied by weights
 u <- as.matrix(w); u <- apply(u, 2, function(v) (v - mean(v))/sd(v))
-inv_wgt_min <- 1+exp(as.matrix(-cbind(1,u))%*%out4$theta_min)
-inv_wgt_max <- 1+exp(as.matrix(-cbind(1,u))%*%out4$theta_max)
+inv_wgt_min <- 1+exp(as.matrix(-cbind(1,u))%*%out5$theta_min)
+inv_wgt_max <- 1+exp(as.matrix(-cbind(1,u))%*%out5$theta_max)
 
 # For min
 print(paste("Population mean of males:", round(weighted.mean(x=w$w_sex, w=inv_wgt_min),4)))
@@ -85,6 +85,13 @@ print(paste("Population mean of males:", round(weighted.mean(x=w$w_sex, w=inv_wg
 print(paste("Population mean of income:", round(weighted.mean(x=w$w_inc, w=inv_wgt_max),4)))
 print(paste("Population mean of age:", round(weighted.mean(x=w$w_rosla, w=inv_wgt_max),4)))
 
+# Implied probability weights
+cov_grid <- expand.grid(sort(unique(w$w_edu)), sort(unique(w$w_sex)))
+implied_prob_min <- apply(X=cov_grid, MARGIN=1, FUN=function(x) mean(1/inv_wgt_min[w$w_edu==x[1] & w$w_sex==x[2]]))
+implied_prob_max <- apply(X=cov_grid, MARGIN=1, FUN=function(x) mean(1/inv_wgt_max[w$w_edu==x[1] & w$w_sex==x[2]]))
+
+cbind(cov_grid, round(implied_prob_min,2), round(implied_prob_max,2))
+
 # Plot
 main <- data.frame(type=c("0","1","2","3","4"),
                    ci_lower=c(out0$ci[1], out1$ci[1], out2$ci[1], out3$ci[1], out4$ci[1]),
@@ -93,7 +100,7 @@ main <- data.frame(type=c("0","1","2","3","4"),
                    interval_upper=c(out0$interval[2], out1$interval[2], out2$interval[2], out3$interval[2], out4$interval[2]))
 
 
-# main <- readRDS("~/IEASBOS_FILES_/SIMULATIONS/DATA/applied_example_1.rds")
+# main <- readRDS("IEASBOS_FILES/SIMULATIONS/DATA/applied_example_1.rds")
 
 # Add raw estimate
 main <- rbind(main, c("5",0.08, 0.28, 0.17, 0.19))
@@ -102,7 +109,7 @@ main$ci_upper <- as.numeric(main$ci_upper)
 main$interval_lower <- as.numeric(main$interval_lower)
 main$interval_upper <- as.numeric(main$interval_upper)
 
-# saveRDS(main, file="SIMULATIONS/DATA/applied_example_1.rds")
+# saveRDS(main, file="IEASBOS_FILES/SIMULATIONS/DATA/applied_example_1.rds")
 
 plot <- ggplot(main, aes(type)) +
   geom_hline(aes(yintercept=0), color = "grey", linetype="dashed") +

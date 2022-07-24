@@ -50,7 +50,7 @@ selection_bound <- function(y, x, w, z=NULL, L0l, L0u, L1, cons=NULL, theta=NULL
   w <- cbind(rep(1,n),w)
 
   # Replace defaults with user-supplied options
-  global_opts <- list(algorithm="NLOPT_GN_ISRES", maxeval=5e4, xtol_rel=1e-2, print_level=0)
+  global_opts <- list(algorithm="NLOPT_GN_ISRES", maxeval=5e4, xtol_rel=1e-3, print_level=0)
   if (!is.null(opts)) {
     for (j in 1:length(opts)) {
       if(names(opts[j]) == "algorithm") global_opts$algorithm <- opts[[j]]
