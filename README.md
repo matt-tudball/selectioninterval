@@ -28,4 +28,4 @@ library(selectioninterval)
 ```
 
 ## References
-Tudball, M., Zhao, Q., Hughes, R., Tilling, K., & Bowden, J. An interval estimation approach to sample selection bias. *arXiv*. http://arxiv.org/abs/1906.10159 (2020).
+Tudball, M., Hughes, R., Tilling, K., Bowden, J., Zhao, Q. Sample-constrained partial identification with application to selection bias. *Biometrika*. https://academic.oup.com/biomet/advance-article/doi/10.1093/biomet/asac042/6649721 (2022).
